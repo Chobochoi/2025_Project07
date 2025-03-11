@@ -10,20 +10,21 @@ using TMPro;
 
 public class InfoManager : MonoBehaviour
 {
+    [SerializeField] private Transform camerTransform;
 
-    [SerializeField] private Canvas buttonCanvas;         //Infomation ButtonÀ» °ü¸®ÇÏ´Â Canvas
-    [SerializeField] private Canvas infoCanvas;           // PanelÀÇ Äµ¹ö½º (Close Button¸¦ ÇÑ¹ø¿¡ ´ã±â À§ÇÔ)
+    [SerializeField] private Canvas buttonCanvas;         //Infomation Buttonì„ ê´€ë¦¬í•˜ëŠ” Canvas
+    [SerializeField] private Canvas infoCanvas;           // Panelì˜ ìº”ë²„ìŠ¤ (Close Buttonë¥¼ í•œë²ˆì— ë‹´ê¸° ìœ„í•¨)
 
-    [SerializeField] private List<Button> infoButtons = new List<Button>();         // infomation Button ¸®½ºÆ®
-    [SerializeField] private List<Button> closeButtons = new List<Button>();        // Close Button ¸®½ºÆ®
-    [SerializeField] private List<Canvas> panelListImages = new List<Canvas>();     // CanvasÀÇ Panel ¸®½ºÆ® ³×ÀÌ¹Ö:IMG_A000N
-    [SerializeField] private List<RawImage> panelListTextures = new List<RawImage>();     // CanvasÀÇ Panel ¸®½ºÆ® ³×ÀÌ¹Ö:IMG_A000N
+    [SerializeField] private List<Button> infoButtons = new List<Button>();             // infomation Button ë¦¬ìŠ¤íŠ¸
+    [SerializeField] private List<Button> closeButtons = new List<Button>();            // Close Button ë¦¬ìŠ¤íŠ¸
+    [SerializeField] private List<Canvas> panelListImages = new List<Canvas>();         // Canvasì˜ Panel ë¦¬ìŠ¤íŠ¸ ë„¤ì´ë°:IMG_A000N
+    [SerializeField] private List<RawImage> panelListTextures = new List<RawImage>();   // Canvasì˜ Panel ë¦¬ìŠ¤íŠ¸ ë„¤ì´ë°:IMG_A000N
     [SerializeField] private List<Texture2D> imageTextures = new List<Texture2D>();
-    [SerializeField] private List<TextMeshProUGUI> textSummaryPanel = new List<TextMeshProUGUI>();        // ¼³¸í ÅØ½ºÆ® ¸®½ºÆ®
-    private string closeButtonName = "Exit";                                        // Exit ÀÌ¸§À» °¡Áø buttonÀ» Ãß°¡ÇÏ±â À§ÇÔ
-    private string imageTexturePath = "Textures";
-    private string csvFileName = "Summary.csv";
-    public int currentIndex = -1; 
+    private string closeButtonName = "Exit";        // Exit ì´ë¦„ì„ ê°€ì§„ buttonì„ ì¶”ê°€í•˜ê¸° ìœ„í•¨
+    private string imageTexturePath = "Textures";   // Texture ì´ë¦„ì„ ê°€ì§„ Texture2Dë¥¼ ì¶”ê°€í•˜ê¸° ìœ„í•¨
+    public int currentIndex = -1;
+        
+    private float activationDistance = 2.0f;        // í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ë¥¼ ì¸¡ì •í•˜ê¸° ìœ„í•¨
 
     private void Awake()
     {
@@ -33,9 +34,7 @@ public class InfoManager : MonoBehaviour
         SetAllInformationPanelInActive();
         SetAllImageTexturePanel();
         LoadPanelImageTexture();
-        AssignTexturesToPanels();
-        LoadCSVFile();
-        SetTextSummary();
+        AssignTexturesToPanels();        
     }
 
     private void Start()
@@ -43,12 +42,18 @@ public class InfoManager : MonoBehaviour
             
     }
 
-    // ButtonCanvas ³»ºÎ¿¡ ÀÖ´Â BTN_A00N µéÀÇ ÃÊ±âÈ­ ¹× SetÇÏ±â À§ÇÔ
+    private void Update()
+    {
+        ButtonActiveToDistance();
+    }
+
+    // ButtonCanvas ë‚´ë¶€ì— ìˆëŠ” BTN_A00N ë“¤ì˜ ì´ˆê¸°í™” ë° Setí•˜ê¸° ìœ„í•¨
+    // i Icon ë²„íŠ¼ì„
     public void SetAllInfomationButtons()
     {
-        infoButtons.Clear();    // ½ÃÀÛ Àü ¹öÆ° ÃÊ±âÈ­
+        infoButtons.Clear();    // ì‹œì‘ ì „ ë²„íŠ¼ ì´ˆê¸°í™”
 
-        // ButtonCanvans ³»ºÎ¿¡ ÀÖ´Â button¸¸ °¡Á®¿À±â À§ÇÔ
+        // ButtonCanvans ë‚´ë¶€ì— ìˆëŠ” buttonë§Œ ê°€ì ¸ì˜¤ê¸° ìœ„í•¨
         Button[] allInfoButtons = buttonCanvas.GetComponentsInChildren<Button>(true);
 
         foreach (Button button in allInfoButtons)
@@ -59,12 +64,29 @@ public class InfoManager : MonoBehaviour
         for (int i = 0; i < infoButtons.Count; i++)
         {
             int tempIndex = i;
-            infoButtons[i].onClick.RemoveAllListeners();    // È¤½Ã ¸ğ¸¦ Áßº¹ ÀÌº¥Æ® Á¦°Å
+            infoButtons[i].onClick.RemoveAllListeners();    // í˜¹ì‹œ ëª¨ë¥¼ ì¤‘ë³µ ì´ë²¤íŠ¸ ì œê±°
             infoButtons[i].onClick.AddListener(() => OpenInfoCanvas(tempIndex));
         }
     }
 
-    // ¸ğµç PanelÀ» ÃÊ±âÈ­ ¹× SetÇÏ±â À§ÇÔ       
+    // i Icon ë²„íŠ¼ì´ í”Œë ˆì´ì–´ì˜ ê±°ë¦¬ì— ë”°ë¼ í™œ/ë¹„í™œì„±í™” ë˜ê²Œ í•˜ê¸° ìœ„í•¨ Updateì—ì„œ ê±°ë¦¬ ì²´í¬
+    private void ButtonActiveToDistance()
+    {
+        if (camerTransform == null) return;
+
+        Vector3 playerPos = camerTransform.position;
+
+        for (int i = 0; i < infoButtons.Count; i++)
+        {
+            float distance = Vector3.Distance(playerPos, infoButtons[i].transform.position);
+
+            // InfoButtonì´ í˜¸ì¶œí•˜ëŠ” Panel ë„ ê°™ì´ ì§„í–‰
+            infoButtons[i].gameObject.SetActive(distance <= activationDistance);   
+            panelListImages[i].gameObject.SetActive(distance <= activationDistance);            
+        }        
+    }    
+
+    // ëª¨ë“  Panelì„ ì´ˆê¸°í™” ë° Setí•˜ê¸° ìœ„í•¨       
     public void SetAllInformationPanel()
     {
         panelListImages.Clear();
@@ -83,16 +105,17 @@ public class InfoManager : MonoBehaviour
         }
     }
 
-    // ÃÊ±â¿¡ PanelµéÀ» ¼û±â±â À§ÇÔ
+    // ì´ˆê¸°ì— Panelë“¤ì„ ìˆ¨ê¸°ê¸° ìœ„í•¨
     private void SetAllInformationPanelInActive()
     {
         foreach (var panel in panelListImages)
         {
             panel.enabled = false;
         }
-    }    
+    }
 
-    // ¸ğµç ´İ±â ¹öÆ°À» ÃÊ±âÈ­ ¹× SetÇÏ±â À§ÇÔ
+
+    // ëª¨ë“  ë‹«ê¸° ë²„íŠ¼ì„ ì´ˆê¸°í™” ë° Setí•˜ê¸° ìœ„í•¨
     public void SetCloseButtons()
     {
         closeButtons.Clear();
@@ -110,15 +133,15 @@ public class InfoManager : MonoBehaviour
         for (int i = 0; i < closeButtons.Count; i++)
         {
             int tempIndex = i;
-            closeButtons[i].onClick.RemoveAllListeners();    // È¤½Ã ¸ğ¸¦ Áßº¹ ÀÌº¥Æ® Á¦°Å
+            closeButtons[i].onClick.RemoveAllListeners();    // í˜¹ì‹œ ëª¨ë¥¼ ì¤‘ë³µ ì´ë²¤íŠ¸ ì œê±°
             closeButtons[i].onClick.AddListener(() => CloseInfoCanvas(tempIndex));
         }
 
     }
 
-    // Main Image TextureÀ» ÁöÁ¤ÇÏ±â À§ÇÔ
-    // ÃßÈÄ¿¡ Æ¯Á¤ °æ·Î¿¡¼­ Æ¯Á¤ ÀÌ¸§À¸·Î ¸ğµÎ ·ÎµåÇÒ °ÍÀÓ.
-    // ÇöÀçµµ ÇØ´ç ¹æ½ÄÀº ÁÁÁö ¾Ê¾Æ ÃßÈÄ¿¡ µñ¼Å³Ê¸® µîÀ¸·Î º¯°æ ¿¹Á¤
+    // Main Image Textureì„ ì§€ì •í•˜ê¸° ìœ„í•¨
+    // ì¶”í›„ì— íŠ¹ì • ê²½ë¡œì—ì„œ íŠ¹ì • ì´ë¦„ìœ¼ë¡œ ëª¨ë‘ ë¡œë“œí•  ê²ƒì„.
+    // í˜„ì¬ë„ í•´ë‹¹ ë°©ì‹ì€ ì¢‹ì§€ ì•Šì•„ ì¶”í›„ì— ë”•ì…”ë„ˆë¦¬ ë“±ìœ¼ë¡œ ë³€ê²½ ì˜ˆì •
     public void SetAllImageTexturePanel()
     {
         panelListTextures.Clear();            
@@ -135,7 +158,7 @@ public class InfoManager : MonoBehaviour
         
     }
 
-    // Texture ÀÌ¹ÌÁö ºÒ·¯¿À±â À§ÇÔ
+    // Texture ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¤ê¸° ìœ„í•¨
     public void LoadPanelImageTexture()
     {
         imageTextures.Clear();
@@ -156,56 +179,16 @@ public class InfoManager : MonoBehaviour
         }
     }
 
-    public void LoadCSVFile()
-    {
-
-        string filePath = Path.Combine(Application.streamingAssetsPath, csvFileName);
-        
-        if (File.Exists(filePath))
-        {
-            Debug.Log("ÆÄÀÏÀÖÀ½");
-            string[] lines = File.ReadAllLines(filePath);
-            //UpdateTextSummary(lines);
-        }
-
-        else
-        {
-            Debug.Log("ÆÄÀÏ¾øÀ½");
-        }
-    }
-
-    public void SetTextSummary()
-    {
-        TextMeshProUGUI[] textSummaryPanels = infoCanvas.GetComponentsInChildren<TextMeshProUGUI>(true);
-
-        foreach (TextMeshProUGUI textDataSummary in textSummaryPanels)
-        {
-            if (textDataSummary.name.Contains("Summary"))
-            {
-                textSummaryPanel.Add(textDataSummary);
-            }
-        }        
-    }
-
-    public void Test(string[] textSummary)
-    {
-        int minCount = Mathf.Min(textSummaryPanel.Count, textSummary.Length);
-        
-        for (int i = 0; i < minCount; i++)
-        {
-            textSummaryPanel[i].text = textSummary[i];
-        }
-    }
-
+    #region Infomation UI On/Off
     public void OpenInfoCanvas(int index)
     {
         if (index < 0 || index >= panelListImages.Count)
         {
-            Debug.LogError($"Àß¸øµÈ ÀÎµ¦½º: {index} (ÃÑ ÆĞ³Î °³¼ö: {panelListImages.Count})");
+            Debug.LogError($"ì˜ëª»ëœ ì¸ë±ìŠ¤: {index} (ì´ íŒ¨ë„ ê°œìˆ˜: {panelListImages.Count})");
             return;
         }
 
-        // ¼±ÅÃÇÑ ÆĞ³Î¸¸ È°¼ºÈ­
+        // ì„ íƒí•œ íŒ¨ë„ë§Œ í™œì„±í™”
         panelListImages[index].enabled = true;
         currentIndex = index;        
     }
@@ -214,12 +197,16 @@ public class InfoManager : MonoBehaviour
     {
         if (index < 0 || index >= panelListImages.Count)
         {
-            Debug.LogError($"Àß¸øµÈ ÀÎµ¦½º: {index} (ÃÑ ÆĞ³Î °³¼ö: {panelListImages.Count})");
+            Debug.LogError($"ì˜ëª»ëœ ì¸ë±ìŠ¤: {index} (ì´ íŒ¨ë„ ê°œìˆ˜: {panelListImages.Count})");
             return;
         }
 
         currentIndex = index;
         panelListImages[index].enabled = false;
     }
+    #endregion
+
+    #region ì‚­ì œ ì˜ˆì •
+    
+    #endregion 
 }
-;

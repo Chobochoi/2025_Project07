@@ -68,7 +68,7 @@ public class CanvasManager2D : MonoBehaviour
         for (int i = 0; i < buttons.Count; i++)
         {
             int tempIndex = i;
-            Debug.Log(tempIndex);
+            //Debug.Log(tempIndex);
             buttons[i].onClick.RemoveAllListeners(); // 혹시 모를 중복 이벤트 제거
             buttons[i].onClick.AddListener(() => MoveToTargetTransform(tempIndex)); // 클릭 이벤트 추가
             Debug.Log($"버튼 {buttons[i].name}에 클릭 이벤트 추가됨.");
@@ -119,7 +119,7 @@ public class CanvasManager2D : MonoBehaviour
         {
             percent += Time.deltaTime / loadingTime;
             loadingSlider.value = percent;
-            Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
+            //Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
 
             yield return null;
         }

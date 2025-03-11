@@ -1,10 +1,9 @@
-﻿using ControllerManager;
+using ControllerManager;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-//using UnityEngine.UIElements;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -77,10 +76,10 @@ public class CanvasManager : MonoBehaviour
         for (int i = 0; i < buttons.Count; i++)
         {
             int tempIndex = i;
-            Debug.Log(tempIndex);
+            //Debug.Log(tempIndex);
             buttons[i].onClick.RemoveAllListeners(); // 혹시 모를 중복 이벤트 제거
             buttons[i].onClick.AddListener(() => OnButtonClick(tempIndex)); // 클릭 이벤트 추가
-            Debug.Log($"버튼 {buttons[i].name}에 클릭 이벤트 추가됨.");
+            //Debug.Log($"버튼 {buttons[i].name}에 클릭 이벤트 추가됨.");
 
             movePositions.Add((buttons[i].transform.position));
         }
