@@ -36,7 +36,7 @@ public class CanvasManager2D : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // ½ÃÀÛ Àü ·ÎµùÈ­¸é ºñÈ°¼ºÈ­
+        // ì‹œì‘ ì „ ë¡œë”©í™”ë©´ ë¹„í™œì„±í™”
         loadingImage.SetActive(false);
     }
 
@@ -54,10 +54,10 @@ public class CanvasManager2D : MonoBehaviour
         
     }
 
-    // ÀÌµ¿°¡´ÉÇÏ°Ô ÇÒ ¹öÆ°µéÀ» µî·ÏÇÏ±â
+    // ì´ë™ê°€ëŠ¥í•˜ê²Œ í•  ë²„íŠ¼ë“¤ì„ ë“±ë¡í•˜ê¸°
     private void RegisterButtons()
     {
-        // ¹öÆ° ÃÊ±âÈ­
+        // ë²„íŠ¼ ì´ˆê¸°í™”
         buttons.Clear();
         
         foreach (Button button in GetComponentsInChildren<Button>(true)) 
@@ -69,9 +69,9 @@ public class CanvasManager2D : MonoBehaviour
         {
             int tempIndex = i;
             //Debug.Log(tempIndex);
-            buttons[i].onClick.RemoveAllListeners(); // È¤½Ã ¸ğ¸¦ Áßº¹ ÀÌº¥Æ® Á¦°Å
-            buttons[i].onClick.AddListener(() => MoveToTargetTransform(tempIndex)); // Å¬¸¯ ÀÌº¥Æ® Ãß°¡
-            Debug.Log($"¹öÆ° {buttons[i].name}¿¡ Å¬¸¯ ÀÌº¥Æ® Ãß°¡µÊ.");
+            buttons[i].onClick.RemoveAllListeners(); // í˜¹ì‹œ ëª¨ë¥¼ ì¤‘ë³µ ì´ë²¤íŠ¸ ì œê±°
+            buttons[i].onClick.AddListener(() => MoveToTargetTransform(tempIndex)); // í´ë¦­ ì´ë²¤íŠ¸ ì¶”ê°€
+            Debug.Log($"ë²„íŠ¼ {buttons[i].name}ì— í´ë¦­ ì´ë²¤íŠ¸ ì¶”ê°€ë¨.");
         }
     }
 
@@ -81,11 +81,11 @@ public class CanvasManager2D : MonoBehaviour
         
         playerTransform.position = targetPositions[index];
         cameraTransform.position = targetPositions[index];
-        Debug.Log($"ÇÃ·¹ÀÌ¾î°¡ {targetPositions[index]} À§Ä¡·Î ÀÌµ¿ÇÔ");
+        Debug.Log($"í”Œë ˆì´ì–´ê°€ {targetPositions[index]} ìœ„ì¹˜ë¡œ ì´ë™í•¨");
 
         StartCoroutine(LoadImageDuringMoveToTarget());
 
-        // ÀÌµ¿ ¹öÆ° Å¬¸¯ ½Ã¿¡ ºñ/È°¼ºÈ­µÇ´Â MovePoints °ü¸®¸¦ À§ÇÔ
+        // ì´ë™ ë²„íŠ¼ í´ë¦­ ì‹œì— ë¹„/í™œì„±í™”ë˜ëŠ” MovePoints ê´€ë¦¬ë¥¼ ìœ„í•¨
         if (Vector3.Distance(targetPositions[index], CanvasManager.Instance.movePositions[0]) < 0.01f)
         {
             for (int i = 0; movePoints.Count > i; i++)
@@ -119,7 +119,7 @@ public class CanvasManager2D : MonoBehaviour
         {
             percent += Time.deltaTime / loadingTime;
             loadingSlider.value = percent;
-            //Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
+            Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
 
             yield return null;
         }
