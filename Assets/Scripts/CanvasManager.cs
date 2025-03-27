@@ -83,7 +83,7 @@ public class CanvasManager : MonoBehaviour
 
             movePositions.Add((buttons[i].transform.position));
         }
-    }      
+    }
 
     // 모든 MovePoint의 MeshRender를 비활성화하고
     // 시작점의 MovePoint MeshRender만 활성화 및 current에 저장 
@@ -97,7 +97,8 @@ public class CanvasManager : MonoBehaviour
         // 시작하기 위한 Setting
         previousIndex = 0;
         movePoints[previousIndex].GetComponent<MeshRenderer>().enabled = true;
-    }
+    }   
+
 
     public void OnButtonClick(int index)
     {
@@ -123,22 +124,22 @@ public class CanvasManager : MonoBehaviour
     // 코루틴이 끝나고 함수 실행을 하기위해 PlayerController.cs에 Action을 추가한 후 Invoke 호출
     public void OnMoveComplete(int index)
     {
-        if(previousIndex != -1)
-        {
-            // 이전의 movePoints Renderer 비활성화
-            movePoints[previousIndex].GetComponent<MeshRenderer>().enabled = false;
+        //if(previousIndex != -1)
+        //{
+        //    // 이전의 movePoints Renderer 비활성화
+        //    movePoints[previousIndex].GetComponent<MeshRenderer>().enabled = false;
 
-            // 2D Canvas로 화면 전환 시 Renderer가 꺼지지 않는 현상 수정을 위해 추가한 코드
-            if (previousIndex != CanvasManager2D.Instance.previousIndex)
-            {
-                movePoints[CanvasManager2D.Instance.previousIndex].GetComponent<MeshRenderer>().enabled = false;
-            }
+        //    // 2D Canvas로 화면 전환 시 Renderer가 꺼지지 않는 현상 수정을 위해 추가한 코드
+        //    if (previousIndex != CanvasManager2D.Instance.previousIndex)
+        //    {
+        //        movePoints[CanvasManager2D.Instance.previousIndex].GetComponent<MeshRenderer>().enabled = false;
+        //    }
 
-            // 클릭된 movePoints Renderer 활성화
-            movePoints[index].GetComponent<MeshRenderer>().enabled = true;
+        //    // 클릭된 movePoints Renderer 활성화
+        //    movePoints[index].GetComponent<MeshRenderer>().enabled = true;
 
-            previousIndex = index;
-        }
+        //    previousIndex = index;
+        //}
     }
     
     // 버튼이 카메라를 바라보게 하기 위함
@@ -152,8 +153,7 @@ public class CanvasManager : MonoBehaviour
         {
             button.transform.LookAt(cameraTransform);
             button.transform.Rotate(0, 180, 0);
-        }
-        
+        }        
     }
 
     // 카메라와 버튼의 거리사이를 측정하여 일정거리 이상일때만 Active 되게 함

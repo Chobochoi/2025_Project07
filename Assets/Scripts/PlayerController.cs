@@ -24,6 +24,10 @@ namespace ControllerManager
         [SerializeField] private float zoomSpeed = 3f;
         [SerializeField] private float minFOV = 30f; // 최소 FOV (줌 인)
         [SerializeField] private float maxFOV = 60f; // 최대 FOV (줌 아웃)
+
+        [SerializeField] private Transform miniMapCameraTransform;              
+
+        private float miniMapXValue;
         private float targetFOV;
 
         private bool isMoving = false;
@@ -57,8 +61,16 @@ namespace ControllerManager
         // 마우스 우클릭 회전
         private void HandleMouseRotation()
         {
-            if (Input.GetMouseButton(1)) // 우클릭 드래그
+            if (Input.GetMouseButton(1)) // 우클릭 드래그  
             {
+                // 현재 카메라의 실제 회전값을 기준으로 yaw와 pitch 업데이트  
+                Vector3 currentRotation = cameraTransform.rotation.eulerAngles;
+
+                // 360도 각도를 -180~180 범위로 정규화  
+                yaw = currentRotation.y;
+                pitch = currentRotation.x > 180f ? currentRotation.x - 360f : currentRotation.x;
+
+                // 기존 회전 로직 유지  
                 yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
                 pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
                 pitch = Mathf.Clamp(pitch, -maxLookAngle, maxLookAngle);
@@ -103,7 +115,7 @@ namespace ControllerManager
 
         #region Player 및 Camera 위치 이동
         public void MoveToPosition(Vector3 targetPosition, Action onComplete)
-        {
+        {            
             if (!isMoving)
             {
                 StartCoroutine(MoveToTarget(targetPosition, onComplete));
@@ -113,22 +125,35 @@ namespace ControllerManager
         // MoveToTarget 코루틴이 완료된 후에 실행이 필요한 콜백 함수가 있어서 Action을 추가함.
         private IEnumerator MoveToTarget(Vector3 targetPosition, Action onComplete)
         {
+            miniMapXValue = miniMapCameraTransform.position.x;
+            
             isMoving = true;
 
             while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
             {
                 transform.position = Vector3.Lerp(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
                 yield return null;
             }            
 
             transform.position = targetPosition;
             cameraTransform.position = targetPosition;
+
+            // 미니맵 이동도 관리하기 위해서 추가한 코드
+            // Player의 X 좌표만 받아와서 Player가 이동 시에 Minimap의 X값 변경
+            Vector3 newMiniMapPosition = miniMapCameraTransform.position;
+            newMiniMapPosition.x = targetPosition.x;
+            miniMapCameraTransform.position = newMiniMapPosition;
+
+            miniMapXValue = targetPosition.x;
+
             isMoving = false;
 
             // 추가 해보는 Invoke
             onComplete?.Invoke();
 
             Debug.Log($"이동 완료! 현재 위치: {targetPosition}");
+            Debug.Log($"이동 완료! MapValue: {targetPosition.x}");
         }
         #endregion
 

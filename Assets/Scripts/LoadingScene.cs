@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public enum SceneNames { LoadingScene = 0, Intro }
+public enum SceneNames { LoadingScene = 0, Deck_Preview }
 
 namespace LoadingManager
 {

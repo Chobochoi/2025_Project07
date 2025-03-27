@@ -9,17 +9,14 @@ public class CanvasManager2D : MonoBehaviour
     public static CanvasManager2D Instance { get; private set; }
     
     [Header ("Default Settings")]
-    [SerializeField] private Transform cameraTransform;
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] public Transform cameraTransform;
+    [SerializeField] public Transform playerTransform;
 
     [Header("Button List")]
     [SerializeField] private List<Button> buttons = new List<Button>();
 
     [Header("Target List")]
-    [SerializeField] private List<Vector3> targetPositions = new List<Vector3>();
-
-    public int previousIndex;
-    public List<GameObject> movePoints;
+    [SerializeField] private List<Transform> targetPositions = new List<Transform>();    
 
     [Header("LoadIMG Settings")]
     [SerializeField] private GameObject loadingImage;
@@ -43,27 +40,14 @@ public class CanvasManager2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RegisterButtons();
-        int previousIndex = CanvasManager.Instance.previousIndex;
-        movePoints = CanvasManager.Instance.movePoints;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        RegisterButtons();        
+    }    
 
     // 이동가능하게 할 버튼들을 등록하기
     private void RegisterButtons()
     {
         // 버튼 초기화
-        buttons.Clear();
-        
-        foreach (Button button in GetComponentsInChildren<Button>(true)) 
-        {
-            buttons.Add(button);
-        }
+        buttons.Clear();              
 
         for (int i = 0; i < buttons.Count; i++)
         {
@@ -78,35 +62,23 @@ public class CanvasManager2D : MonoBehaviour
     public void MoveToTargetTransform(int index)
     {
         if (index < 0 || index >= targetPositions.Count) return;
-        
-        playerTransform.position = targetPositions[index];
-        cameraTransform.position = targetPositions[index];
+
+        cameraTransform = targetPositions[index];
+        playerTransform = targetPositions[index];
+
+        if (playerTransform != null)
+        {
+            playerTransform.position = targetPositions[index].position;
+        }
+
+        if (cameraTransform != null)
+        {
+            cameraTransform.position = targetPositions[index].position;
+        }
+
         Debug.Log($"플레이어가 {targetPositions[index]} 위치로 이동함");
 
-        StartCoroutine(LoadImageDuringMoveToTarget());
-
-        // 이동 버튼 클릭 시에 비/활성화되는 MovePoints 관리를 위함
-        if (Vector3.Distance(targetPositions[index], CanvasManager.Instance.movePositions[0]) < 0.01f)
-        {
-            for (int i = 0; movePoints.Count > i; i++)
-            {
-                movePoints[i].GetComponent<MeshRenderer>().enabled = false;
-            }
-
-            previousIndex = 0;
-            movePoints[previousIndex].GetComponent<MeshRenderer>().enabled = true;
-        }
-
-        if (Vector3.Distance(targetPositions[index], CanvasManager.Instance.movePositions[9]) < 0.01f)
-        {
-            for (int i = 0; movePoints.Count > i; i++)
-            {
-                movePoints[i].GetComponent<MeshRenderer>().enabled = false;
-            }
-
-            previousIndex = 9;
-            movePoints[previousIndex].GetComponent<MeshRenderer>().enabled = true;
-        }
+        StartCoroutine(LoadImageDuringMoveToTarget());            
     }
 
     public IEnumerator LoadImageDuringMoveToTarget()
@@ -125,5 +97,5 @@ public class CanvasManager2D : MonoBehaviour
         }
 
         loadingImage.SetActive(false);
-    }
+    }    
 }

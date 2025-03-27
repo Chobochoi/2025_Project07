@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadingScene.unity
     guid: 7e2eaea2d6a9f0344af6c7cc800e63b8
   - enabled: 1
-    path: Assets/Scenes/Intro.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/Deck_Preview.unity
+    guid: 5978bd4c68fa836418502d5190900a9c
   m_configObjects: {}
