@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine.Networking;
+using ControllerManager;
 
 [System.Serializable]
 public class CategoryData
@@ -39,11 +40,17 @@ public class ImageSlider : MonoBehaviour
     [SerializeField] private FadeSettings fadeSettings;
     [SerializeField] private RawImage fadeOverlayImage;
 
+    [Header("MiniMap Setting")]
+    [SerializeField] private Transform miniMapCameraTransform;
+
     private List<string> imagePaths = new List<string>();
     private List<Transform> availableTransforms = new List<Transform>();
     private ScrollRect scrollRect;
     private int currentCategoryIndex = 0;
     private bool isTransitioning = false;
+
+    // Hotspot Button 업데이트를 위한 Instance 호출
+    [SerializeField] private PanoramaSpotsController panoramaSpotsController;
 
     private void Start()
     {
@@ -212,8 +219,8 @@ public class ImageSlider : MonoBehaviour
     {
         if (index >= 0 && index < availableTransforms.Count && !isTransitioning)
         {
-            StartCoroutine(SmoothTransition(availableTransforms[index]));
-        }
+            StartCoroutine(SmoothTransition(availableTransforms[index]));            
+        }        
     }
 
     private IEnumerator SmoothTransition(Transform targetTransform)
@@ -240,22 +247,28 @@ public class ImageSlider : MonoBehaviour
         Quaternion targetPlayerRotation = targetTransform.rotation;
         Quaternion targetCameraRotation = targetTransform.rotation;
 
+        // Minimap 위치
+        Vector3 newMiniMapPoistion = miniMapCameraTransform.position;
+        newMiniMapPoistion.x = targetPlayerPosition.x;
+        newMiniMapPoistion.z = targetPlayerPosition.z;
+        miniMapCameraTransform.position = newMiniMapPoistion;
+
         // 실제 이동  
         float elapsedTime = 0f;
         while (elapsedTime < movementDuration)
         {
-            float t = movementCurve.Evaluate(elapsedTime / movementDuration);
+            float time = movementCurve.Evaluate(elapsedTime / movementDuration);
 
             if (playerTransform != null)
             {
-                playerTransform.position = Vector3.Lerp(startPlayerPosition, targetPlayerPosition, t);
-                playerTransform.rotation = Quaternion.Slerp(startPlayerRotation, targetPlayerRotation, t);
+                playerTransform.position = Vector3.Lerp(startPlayerPosition, targetPlayerPosition, time);
+                playerTransform.rotation = Quaternion.Slerp(startPlayerRotation, targetPlayerRotation, time);
             }
 
             if (cameraTransform != null)
             {
-                cameraTransform.position = Vector3.Lerp(startCameraPosition, targetCameraPosition, t);
-                cameraTransform.rotation = Quaternion.Slerp(startCameraRotation, targetCameraRotation, t);
+                cameraTransform.position = Vector3.Lerp(startCameraPosition, targetCameraPosition, time);
+                cameraTransform.rotation = Quaternion.Slerp(startCameraRotation, targetCameraRotation, time);
             }
 
             elapsedTime += Time.deltaTime;
@@ -267,16 +280,23 @@ public class ImageSlider : MonoBehaviour
         {
             playerTransform.position = targetPlayerPosition;
             playerTransform.rotation = targetPlayerRotation;
+            newMiniMapPoistion.x = targetPlayerPosition.x;
+            newMiniMapPoistion.z = targetPlayerPosition.z;
         }
 
         if (cameraTransform != null)
         {
             cameraTransform.position = targetCameraPosition;
             cameraTransform.rotation = targetCameraRotation;
+            newMiniMapPoistion.x = targetPlayerPosition.x;
+            newMiniMapPoistion.z = targetPlayerPosition.z;
         }
 
         // 페이드 인  
         yield return StartCoroutine(FadeScreen(false));
+        
+        // 왜 해당 함수가 호출이 안되는지?
+        ButtonUpdate();
 
         isTransitioning = false;
     }
@@ -298,5 +318,13 @@ public class ImageSlider : MonoBehaviour
 
         // 최종 색상 설정  
         fadeOverlayImage.color = targetColor;
+    }
+
+    public void ButtonUpdate()
+    {
+        if (panoramaSpotsController != null)
+        {
+            panoramaSpotsController.UpdateButtonActivation();
+        }
     }
 }

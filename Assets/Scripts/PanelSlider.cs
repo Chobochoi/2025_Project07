@@ -23,13 +23,13 @@ public class PanelSlider : MonoBehaviour
             // 아래로 슬라이드  
             Vector2 targetPos = new Vector2(showPosition.x, showPosition.y - slideDistance);
             panel.DOAnchorPos(targetPos, slideDuration).SetEase(Ease.OutQuad);
-            imagePivot.rectTransform.localScale = new Vector3(1, 1, 1);
+            imagePivot.rectTransform.localScale = new Vector3(1, -1, 1);
         }
         else
         {
             // 위로 슬라이드  
             panel.DOAnchorPos(showPosition, slideDuration).SetEase(Ease.OutQuad);
-            imagePivot.rectTransform.localScale = new Vector3(1, -1, 1);
+            imagePivot.rectTransform.localScale = new Vector3(1, 1, 1);
         }
 
         isVisible = !isVisible;

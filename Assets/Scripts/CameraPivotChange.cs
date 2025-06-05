@@ -5,6 +5,7 @@ using UnityEngine.UI; // UI 요소를 사용하기 위한 네임스페이스
 public class CameraPivotChange : MonoBehaviour
 {
     // 이동할 3개 구역의 위치와 회전값  
+    // 추후 어떻게 3D 회전을 보여줄 것인가? 에 따라 코드의 수정 여부가 있음. 현재는 Semi 테스트 용
     [System.Serializable]
     public class CameraPosition
     {
@@ -148,11 +149,11 @@ public class CameraPivotChange : MonoBehaviour
         while (timeElapsed < 1.0f)
         {
             // 실제 보간 비율 계산 (0에서 1 사이의 값)  
-            float t = timeElapsed / (1.0f / moveSpeed);
+            float time = timeElapsed / (1.0f / moveSpeed);
 
             // 위치와 회전을 부드럽게 변경  
-            camTransform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            camTransform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+            camTransform.position = Vector3.Lerp(startPosition, targetPosition, time);
+            camTransform.rotation = Quaternion.Slerp(startRotation, targetRotation, time);
 
             timeElapsed += Time.deltaTime;
             yield return null;

@@ -53,10 +53,21 @@ namespace ControllerManager
             }
         }
 
+        // 해당 함수에서 Null Reference가 뜰 경우
+        // Target Object 내부에 Spots가 비어있는건 없는지 확인하기.
         private void CheckAndManageSkyboxes()
         {
+            // playerController가 null인지 먼저 확인  
+            if (playerController == null)
+            {
+                Debug.LogError("PlayerController is not assigned!");
+                return;
+            }
+
             foreach (SkyboxTarget target in skyboxTargets)
             {
+                if (target.skyboxes == null) continue;
+
                 for (int i = 0; i < target.skyboxes.Length; i++)
                 {
                     GameObject skybox = target.skyboxes[i];
@@ -81,6 +92,7 @@ namespace ControllerManager
         private void SetSkyboxIntensity(GameObject skybox, float intensity)
         {
             Renderer renderer = skybox.GetComponent<Renderer>();
+            
             if (renderer != null)
             {
                 Material material = renderer.material;

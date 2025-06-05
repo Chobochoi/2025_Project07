@@ -22,6 +22,9 @@ public class CanvasManager2D : MonoBehaviour
     [SerializeField] private GameObject loadingImage;
     [SerializeField] private Slider loadingSlider;
 
+    [Header("MiniMap Setting")]
+    [SerializeField] private Transform miniMapCameraTransform;
+
     private void Awake()
     {
         if (Instance == null)
@@ -38,42 +41,54 @@ public class CanvasManager2D : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
-        RegisterButtons();        
-    }    
+    //void Start()
+    //{
+    //    RegisterButtons();        
+    //}    
 
-    // 이동가능하게 할 버튼들을 등록하기
-    private void RegisterButtons()
-    {
-        // 버튼 초기화
-        buttons.Clear();              
+    //// 이동가능하게 할 버튼들을 등록하기
+    //private void RegisterButtons()
+    //{
+    //    // 버튼 초기화
+    //    buttons.Clear();              
 
-        for (int i = 0; i < buttons.Count; i++)
-        {
-            int tempIndex = i;
-            //Debug.Log(tempIndex);
-            buttons[i].onClick.RemoveAllListeners(); // 혹시 모를 중복 이벤트 제거
-            buttons[i].onClick.AddListener(() => MoveToTargetTransform(tempIndex)); // 클릭 이벤트 추가
-            Debug.Log($"버튼 {buttons[i].name}에 클릭 이벤트 추가됨.");
-        }
-    }
+    //    for (int i = 0; i < buttons.Count; i++)
+    //    {
+    //        int tempIndex = i;
+    //        //Debug.Log(tempIndex);
+    //        buttons[i].onClick.RemoveAllListeners(); // 혹시 모를 중복 이벤트 제거
+    //        buttons[i].onClick.AddListener(() => MoveToTargetTransform(tempIndex)); // 클릭 이벤트 추가
+    //        Debug.Log($"버튼 {buttons[i].name}에 클릭 이벤트 추가됨.");
+    //    }
+    //}
 
     public void MoveToTargetTransform(int index)
     {
-        if (index < 0 || index >= targetPositions.Count) return;
 
-        cameraTransform = targetPositions[index];
-        playerTransform = targetPositions[index];
+        if (index < 0 || index >= targetPositions.Count) return;               
+
+        Transform targetPosition = targetPositions[index];
+
+        // Minimap 위치
+        Vector3 newMiniMapPoistion = miniMapCameraTransform.position;
+        newMiniMapPoistion.x = targetPosition.position.x;
+        newMiniMapPoistion.z = targetPosition.position.z;
+        miniMapCameraTransform.position = newMiniMapPoistion;
 
         if (playerTransform != null)
         {
-            playerTransform.position = targetPositions[index].position;
+            //playerTransform.position = targetPositions[index].position;
+            playerTransform.position = targetPosition.position;
+            newMiniMapPoistion.x = targetPosition.position.x;
+            newMiniMapPoistion.z = targetPosition.position.z;
         }
 
         if (cameraTransform != null)
         {
-            cameraTransform.position = targetPositions[index].position;
+            //cameraTransform.position = targetPositions[index].position;
+            cameraTransform.position = targetPosition.position;
+            newMiniMapPoistion.x = targetPosition.position.x;
+            newMiniMapPoistion.z = targetPosition.position.z;
         }
 
         Debug.Log($"플레이어가 {targetPositions[index]} 위치로 이동함");
@@ -91,7 +106,7 @@ public class CanvasManager2D : MonoBehaviour
         {
             percent += Time.deltaTime / loadingTime;
             loadingSlider.value = percent;
-            Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
+            //Debug.Log($"{Mathf.RoundToInt(percent * 100)}");
 
             yield return null;
         }

@@ -1375,6 +1375,7 @@ MonoBehaviour:
   panel: {fileID: 1860445158}
   slideDuration: 0.5
   slideDistance: 220
+  imagePivot: {fileID: 0}
 --- !u!4 &194228456
 Transform:
   m_ObjectHideFlags: 0
@@ -6063,12 +6064,11 @@ MonoBehaviour:
   playerTransform: {fileID: 1079219086}
   buttons: []
   targetPositions:
-  - {x: 0, y: 0, z: 0}
-  - {x: -3, y: 0, z: 0}
-  previousIndex: 0
-  movePoints: []
+  - {fileID: 0}
+  - {fileID: 0}
   loadingImage: {fileID: 1749777874}
   loadingSlider: {fileID: 1567618374}
+  miniMapCameraTransform: {fileID: 0}
 --- !u!1 &794192723
 GameObject:
   m_ObjectHideFlags: 0
@@ -8005,6 +8005,7 @@ MonoBehaviour:
   zoomSpeed: 5
   minFOV: 40
   maxFOV: 60
+  miniMapCameraTransform: {fileID: 0}
 --- !u!1 &1080182228
 GameObject:
   m_ObjectHideFlags: 0
@@ -13960,36 +13961,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9a18537d3fb9d4d9f62008c17f471d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollRect: {fileID: 1963171000}
-  contentPanel: {fileID: 1570565517}
-  imageItems:
-  - {fileID: 604840966}
-  - {fileID: 1993237548}
-  - {fileID: 1045522769}
-  - {fileID: 1271649205}
-  - {fileID: 216268283}
-  - {fileID: 225962833}
-  - {fileID: 856088512}
-  - {fileID: 1123073710}
-  - {fileID: 1658511378}
-  - {fileID: 1391569109}
-  - {fileID: 588139880}
-  snapSpeed: 10
-  snappingDistance: 0.05
-  mainCamera: {fileID: 963194227}
-  cameraTargetPositions:
-  - {fileID: 202933375}
-  - {fileID: 657931942}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  - {fileID: 1153687220}
-  cameraMoveSpeed: 10
+  buttonPrefab: {fileID: 0}
+  contentParent: {fileID: 0}
+  categoryDataList: []
+  playerTransform: {fileID: 0}
+  cameraTransform: {fileID: 0}
+  movementDuration: 2
+  rotationDuration: 2
+  movementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  fadeSettings:
+    fadeDuration: 0.5
+    fadeColor: {r: 0, g: 0, b: 0, a: 1}
+  fadeOverlayImage: {fileID: 0}
+  miniMapCameraTransform: {fileID: 0}
+  panoramaSpotsController: {fileID: 0}
 --- !u!1 &1984672621
 GameObject:
   m_ObjectHideFlags: 0

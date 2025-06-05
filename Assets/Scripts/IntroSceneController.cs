@@ -7,10 +7,18 @@ public class IntroSceneController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+    }
+
+    public void GameStart()
+    {
         LoadingManager.LoadingScene.Instance.LoadScene(SceneNames.Deck_Preview);
     }
 
-    // Update is called once per frame
+    public void LobbyBack()
+    {
+        LoadingManager.LoadingScene.Instance.LoadScene(SceneNames.LoadingScene);
+    }
+    
     public void GameExitEvent()
     {
     #if UNITY_EDITOR

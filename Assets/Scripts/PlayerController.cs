@@ -143,6 +143,7 @@ namespace ControllerManager
             // Player의 X 좌표만 받아와서 Player가 이동 시에 Minimap의 X값 변경
             Vector3 newMiniMapPosition = miniMapCameraTransform.position;
             newMiniMapPosition.x = targetPosition.x;
+            newMiniMapPosition.z = targetPosition.z;
             miniMapCameraTransform.position = newMiniMapPosition;
 
             miniMapXValue = targetPosition.x;
